@@ -15,7 +15,8 @@
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test:mutation": "npx stryker run",
     "start": "lite-server",
-    "e2e": "npx playwright test"
+    "e2e": "npx playwright test",
+    "ctrf:generate": "node tools/convert-playwright-to-ctrf.js test-results/playwright-results.json test-results/ctrf-report.json"
   },
   "keywords": [],
   "author": "",

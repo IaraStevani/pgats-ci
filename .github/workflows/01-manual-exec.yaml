@@ -39,6 +39,26 @@ jobs:
             - name: Instalando Browsers do Playwright
               run: yarn playwright install
             
-            # executar os testes e2e
-            - name: Executando testes e2e
-              run: yarn run e2e
+            # executar os testes e2e e salvar saída JSON para conversão CTRF
+            - name: Executando testes e2e (exportando JSON)
+              run: |
+                mkdir -p test-results
+                # executa os testes e gera um relatório JSON em test-results/playwright-results.json
+                # usa redirecionamento e "|| true" para garantir que o próximo passo de geração do relatório CTRF rode mesmo se alguns testes falharem
+                npx playwright test --reporter=json > test-results/playwright-results.json || true
+
+            # gerar relatório CTRF (Common Test Report Format)
+            - name: Gerar CTRF AI Test Reporter
+              run: |
+                # instala dependências de dev (já instaladas anteriormente com yarn, mas garantir disponibilidade do node)
+                # usa o script npm/yarn definido em package.json: "ctrf:generate"
+                yarn ctrf:generate
+
+            # publicar artefatos: JSON bruto do Playwright e relatório CTRF convertido
+            - name: Upload dos artefatos de teste
+              uses: actions/upload-artifact@v4
+              with:
+                name: test-results
+                path: |
+                  test-results/playwright-results.json
+                  test-results/ctrf-report.json
