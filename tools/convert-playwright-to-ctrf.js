@@ -31,6 +31,21 @@ function collectTestsFromSuite(suite, out) {
   }
 }
 
+if (!fs.existsSync(input)) {
+  console.warn(`Arquivo de entrada não encontrado: ${input}. Gerando CTRF vazio.`);
+  const ctrfEmpty = {
+    format: 'CTRF',
+    version: '1.0',
+    generatedAt: new Date().toISOString(),
+    summary: { total: 0, passed: 0, failed: 0, skipped: 0, durationMs: 0 },
+    tests: [],
+  };
+  fs.mkdirSync(path.dirname(output), { recursive: true });
+  fs.writeFileSync(output, JSON.stringify(ctrfEmpty, null, 2), 'utf8');
+  console.log(`CTRF vazio escrito em ${output}`);
+  process.exit(0);
+}
+
 const data = readJson(input);
 let tests = [];
 

@@ -45,7 +45,7 @@ jobs:
                 mkdir -p test-results
                 # executa os testes e gera um relatório JSON em test-results/playwright-results.json
                 # usa redirecionamento e "|| true" para garantir que o próximo passo de geração do relatório CTRF rode mesmo se alguns testes falharem
-                npx playwright test --reporter=json > test-results/playwright-results.json || true
+                npx playwright test --reporter=json > test-results/playwright-results.json 2>&1 || true
 
             # gerar relatório CTRF (Common Test Report Format)
             - name: Gerar CTRF AI Test Reporter
