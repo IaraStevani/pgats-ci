@@ -12,7 +12,7 @@ on:
 # Defaults para todos os passos do workflow
 defaults:
   run:
-    shell: bash
+    shell: pwsh
 
 #tarefas dentro da pipeline = jobs
 
