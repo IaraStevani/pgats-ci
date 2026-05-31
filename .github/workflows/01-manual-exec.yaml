@@ -9,6 +9,11 @@ name: "Execução Manual"
 on:
     workflow_dispatch:
 
+# Defaults para todos os passos do workflow
+defaults:
+  run:
+    shell: bash
+
 #tarefas dentro da pipeline = jobs
 
 jobs:
