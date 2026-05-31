@@ -20,7 +20,7 @@ jobs:
     #nome do job
     e2e-tests:
         # maquina onde o job vai rodar
-        runs-on: [self-hosted, linux]
+        runs-on: [self-hosted, linux, x64]
 
         # passos do job
         steps:
