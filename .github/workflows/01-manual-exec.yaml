@@ -9,13 +9,18 @@ name: "Execução Manual"
 on:
     workflow_dispatch:
 
+# Use o bash para executar etapas, garantindo que os comandos Unix funcionem em máquinas self-hosted
+defaults:
+  run:
+    shell: bash
+
 #tarefas dentro da pipeline = jobs
 
 jobs:
     #nome do job
     e2e-tests:
         # maquina onde o job vai rodar
-        runs-on: self-hosted
+        runs-on: [self-hosted, linux]
 
         # passos do job
         steps:
