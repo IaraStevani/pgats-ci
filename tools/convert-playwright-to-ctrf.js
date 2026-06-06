@@ -32,7 +32,9 @@ function collectTestsFromSuite(suite, out) {
 }
 
 if (!fs.existsSync(input)) {
-  console.warn(`Arquivo de entrada não encontrado: ${input}. Gerando CTRF vazio.`);
+  console.warn(
+    `Arquivo de entrada não encontrado: ${input}. Gerando CTRF vazio.`,
+  );
   const ctrfEmpty = {
     format: 'CTRF',
     version: '1.0',
@@ -78,16 +80,28 @@ if (Array.isArray(data.tests)) {
       return;
     }
     if (obj.title && obj.status) {
-      tests.push({ name: obj.title, status: obj.status, durationMs: obj.duration || null, error: obj.err && obj.err.message });
+      tests.push({
+        name: obj.title,
+        status: obj.status,
+        durationMs: obj.duration || null,
+        error: obj.err && obj.err.message,
+      });
     }
     for (const k of Object.keys(obj)) search(obj[k]);
   }
   search(data);
 }
 
-const summary = { total: tests.length, passed: 0, failed: 0, skipped: 0, durationMs: 0 };
+const summary = {
+  total: tests.length,
+  passed: 0,
+  failed: 0,
+  skipped: 0,
+  durationMs: 0,
+};
 for (const t of tests) {
-  if (t.status === 'passed' || t.status === 'ok' || t.status === 'passed') summary.passed++;
+  if (t.status === 'passed' || t.status === 'ok' || t.status === 'passed')
+    summary.passed++;
   else if (t.status === 'skipped' || t.status === 'pending') summary.skipped++;
   else summary.failed++;
   if (t.durationMs) summary.durationMs += Number(t.durationMs) || 0;

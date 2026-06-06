@@ -1,7 +1,7 @@
 # CI de Nível 03 - Disparo após a conclusão de outra pipeline
 
 # nome da pipeline
-name: "Execução por Deploy"
+name: 'Execução por Deploy'
 
 # gatilhos / triggers - regras de disparo
 # gatilho manual = workflow_dispatch
@@ -9,43 +9,43 @@ name: "Execução por Deploy"
 # gatilho por conclusão de outra pipeline = workflow_run
 
 on:
-    workflow_run:
-      workflows: ['Execução Manual', 'Scheduled Execution']
-      types:
-        - completed
+  workflow_run:
+    workflows: ['Execução Manual', 'Scheduled Execution']
+    types:
+      - completed
 
 #tarefas dentro da pipeline = jobs
 
 jobs:
-    #nome do job
-    e2e-tests:
-        # maquina onde o job vai rodar
-        runs-on: ubuntu-latest
-        
-        if: ${{ github.event.workflow_run.conclusion == 'success' }}
+  #nome do job
+  e2e-tests:
+    # maquina onde o job vai rodar
+    runs-on: ubuntu-latest
 
-        # passos do job
-        steps:
-            # clone do projeto
-            - uses: actions/checkout@v4
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
-            # instalção do node
-            - uses: actions/setup-node@v4
-              with:
-                  node-version: 24.x
+    # passos do job
+    steps:
+      # clone do projeto
+      - uses: actions/checkout@v4
 
-            # instalação do Yarn
-            - name: Instalando Yarn
-              run: npm install -g yarn
-            
-            #   instalação das dependências
-            - name: Instalando dependências
-              run: yarn
-            
-            # instalação dos Browsers do Playwright
-            - name: Instalando Browsers do Playwright
-              run: yarn playwright install
-            
-            # executar os testes e2e
-            - name: Executando testes e2e
-              run: yarn run e2e
+      # instalção do node
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+
+      # instalação do Yarn
+      - name: Instalando Yarn
+        run: npm install -g yarn
+
+      #   instalação das dependências
+      - name: Instalando dependências
+        run: yarn
+
+      # instalação dos Browsers do Playwright
+      - name: Instalando Browsers do Playwright
+        run: yarn playwright install
+
+      # executar os testes e2e
+      - name: Executando testes e2e
+        run: yarn run e2e
