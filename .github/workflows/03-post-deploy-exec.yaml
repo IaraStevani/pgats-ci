@@ -1,21 +1,18 @@
-# CI de Nível 03 - Disparo após deploy
+# CI de Nível 03 - Disparo após a conclusão de outra pipeline
 
 # nome da pipeline
-name: "Execução por deploy"
+name: "Execução por Deploy"
 
 # gatilhos / triggers - regras de disparo
 # gatilho manual = workflow_dispatch
+# gatilho agendado = schedule
+# gatilho por conclusão de outra pipeline = workflow_run
 
 on:
     workflow_run:
-      workflows: ["Execução Manual", 'Scheduled Execution']  
+      workflows: ['Execução Manual', 'Scheduled Execution']
       types:
-        - completed    
-
-# Defaults para todos os passos do workflow
-defaults:
-  run:
-    shell: cmd
+        - completed
 
 #tarefas dentro da pipeline = jobs
 
@@ -24,8 +21,8 @@ jobs:
     e2e-tests:
         # maquina onde o job vai rodar
         runs-on: ubuntu-latest
-
-        if: ${{github.event.workflow_run.conclusion == 'success'}} 
+        
+        if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
         # passos do job
         steps:
@@ -49,26 +46,6 @@ jobs:
             - name: Instalando Browsers do Playwright
               run: yarn playwright install
             
-            # executar os testes e2e e salvar saída JSON para conversão CTRF
-            - name: Executando testes e2e (exportando JSON)
-              run: |
-                mkdir -p test-results
-                # executa os testes e gera um relatório JSON em test-results/playwright-results.json
-                # usa redirecionamento e "|| true" para garantir que o próximo passo de geração do relatório CTRF rode mesmo se alguns testes falharem
-                npx playwright test --reporter=json > test-results/playwright-results.json 2>&1 || true
-
-            # gerar relatório CTRF (Common Test Report Format)
-            - name: Gerar CTRF AI Test Reporter
-              run: |
-                # instala dependências de dev (já instaladas anteriormente com yarn, mas garantir disponibilidade do node)
-                # usa o script npm/yarn definido em package.json: "ctrf:generate"
-                yarn ctrf:generate
-
-            # publicar artefatos: JSON bruto do Playwright e relatório CTRF convertido
-            - name: Upload dos artefatos de teste
-              uses: actions/upload-artifact@v4
-              with:
-                name: test-results
-                path: |
-                  test-results/playwright-results.json
-                  test-results/ctrf-report.json
+            # executar os testes e2e
+            - name: Executando testes e2e
+              run: yarn run e2e
