@@ -7,10 +7,10 @@ name: "Execução agendada"
 # gatilho manual = workflow_dispatch
 
 on:
-    scheduled:
+  schedule:
     # Cronograma de execução
-    # minuto, hora, dia mês, mês, dia da semana
-      - cron: '0 0 * * 0'   # Executa domingo às 0h
+    # minuto, hora, dia mês, mês, dia da semana    
+    - cron: '0 6 * * *'   # Executa todo dia às 03:00 BRT (06:00 UTC)
 
 # Defaults para todos os passos do workflow
 defaults:
