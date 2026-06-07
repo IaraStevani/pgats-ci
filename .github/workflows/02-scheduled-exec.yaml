@@ -1,13 +1,15 @@
 # CI de Nível 02 - Execução Agendada
 
 # nome da pipeline
-name: 'Scheduled Execution'
+name: 'N2 - Execução Agendada'
 
 # gatilhos / triggers - regras de disparo
 # gatilho manual = workflow_dispatch
 # gatilho agendado = schedule
 
 on:
+  workflow_dispatch:
+
   schedule:
     # cronograma de execução
     # 1 - minuto, 2 - hora, 3 dia do mês, 4 - mês, 5 - dia da semana
@@ -18,7 +20,7 @@ on:
     #Roda toda sexta-feira à meia noite
     #- cron: '0 0 * * 5'
 
-    #Roda  todo dia 1º do mês
+    # Roda  todo dia 1º do mês (equivalente a 06:00 BRT)
     - cron: '0 9 1 * *'
 
 #tarefas dentro da pipeline = jobs
@@ -54,3 +56,10 @@ jobs:
       # executar os testes e2e
       - name: Executando testes e2e
         run: yarn run e2e
+
+      - name: Salvando relatórios de testes
+        uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          path: ./playwright-report
+          name: Relatório de Testes E2E

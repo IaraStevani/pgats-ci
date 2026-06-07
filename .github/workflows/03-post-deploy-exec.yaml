@@ -1,7 +1,7 @@
 # CI de Nível 03 - Disparo após a conclusão de outra pipeline
 
 # nome da pipeline
-name: 'Execução por Deploy'
+name: 'N3 -Execução por Deploy'
 
 # gatilhos / triggers - regras de disparo
 # gatilho manual = workflow_dispatch
@@ -10,7 +10,7 @@ name: 'Execução por Deploy'
 
 on:
   workflow_run:
-    workflows: ['Execução Manual', 'Scheduled Execution']
+    workflows: ['N1 - Execução Manual', 'N2 - Execução Agendada']
     types:
       - completed
 
@@ -49,3 +49,10 @@ jobs:
       # executar os testes e2e
       - name: Executando testes e2e
         run: yarn run e2e
+
+      - name: Salvando relatórios de testes
+        uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          path: ./playwright-report
+          name: Relatório de Testes E2E

@@ -1,0 +1,71 @@
+# CI de Nível 01 - Disparo Manual através de clique
+
+# nome da pipeline
+name: 'N6 - Execução local - Self Hosted'
+
+# gatilhos / triggers - regras de disparo
+# gatilho manual = workflow_dispatch
+
+on:
+  workflow_dispatch:
+
+# Defaults para todos os passos do workflow
+defaults:
+  run:
+    shell: cmd
+
+#tarefas dentro da pipeline = jobs
+
+jobs:
+  #nome do job
+  e2e-tests:
+    # maquina onde o job vai rodar
+    runs-on: self-hosted
+
+    # passos do job
+    steps:
+      # clone do projeto
+      - uses: actions/checkout@v4
+
+      # instalção do node
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+
+      # instalação do Yarn
+      - name: Instalando Yarn
+        run: npm install -g yarn
+
+      #   instalação das dependências
+      - name: Instalando dependências
+        run: yarn
+
+      # instalação dos Browsers do Playwright
+      - name: Instalando Browsers do Playwright
+        run: yarn playwright install
+
+      # executar os testes e2e e salvar saída JSON para conversão CTRF
+      - name: Executando testes e2e (exportando JSON)
+        run: |
+          mkdir -p test-results
+          # executa os testes e gera um relatório JSON em test-results/playwright-results.json
+          # usa redirecionamento e "|| true" para garantir que o próximo passo de geração do relatório CTRF rode mesmo se alguns testes falharem
+          npx playwright test --reporter=json > test-results/playwright-results.json 2>&1 || true
+
+      # gerar relatório CTRF (Common Test Report Format)
+      - name: Gerar CTRF AI Test Reporter
+        run: |
+          # instala dependências de dev (já instaladas anteriormente com yarn, mas garantir disponibilidade do node)
+          # usa o script npm/yarn definido em package.json: "ctrf:generate"
+          yarn ctrf:generate
+
+      # publicar artefatos: JSON bruto do Playwright e relatório CTRF convertido
+      - name: Upload dos artefatos de teste
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            test-results/playwright-results.json
+            test-results/ctrf-report.json
+
+      
