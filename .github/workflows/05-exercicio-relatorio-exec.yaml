@@ -62,5 +62,3 @@ jobs:
           path: |
             test-results/playwright-results.json
             test-results/ctrf-report.json
-
-      
