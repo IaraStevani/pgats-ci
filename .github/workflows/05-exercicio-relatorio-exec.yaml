@@ -39,6 +39,10 @@ jobs:
       - name: Instalando Browsers do Playwright
         run: yarn playwright install
 
+      # executar os testes e2e
+      - name: Executando testes e2e
+        run: yarn run e2e      
+
       # executar os testes e2e e salvar saída JSON para conversão CTRF
       - name: Executando testes e2e (exportando JSON)
         run: |
